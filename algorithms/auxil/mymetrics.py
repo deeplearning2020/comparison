@@ -21,5 +21,5 @@ def reports(y_pred, y_test):
     print("Overall Accuracy", oa)
     print("Average Accuracy", aa)
     print("Kappa Co-efficient", kappa)
-    print("Individual Class Accuracy")
+    print("Individual Class Accuracy", each_acc)
     return classification, confusion, np.array([oa, aa, kappa] + list(each_acc)) * 100
