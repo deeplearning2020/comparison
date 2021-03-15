@@ -18,4 +18,8 @@ def reports(y_pred, y_test):
     confusion = confusion_matrix(y_test, y_pred)
     each_acc, aa = AA_andEachClassAccuracy(confusion)
     kappa = cohen_kappa_score(y_test, y_pred)
+    print("Overall Accuracy", oa)
+    print("Average Accuracy", aa)
+    print("Kappa Co-efficient", kappa)
+    print("Individual Class Accuracy")
     return classification, confusion, np.array([oa, aa, kappa] + list(each_acc)) * 100
