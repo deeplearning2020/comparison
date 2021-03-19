@@ -27,7 +27,7 @@ class AttentionBlock(Layer):
     def call(self, x):
 
         max = MaxPooling2D(pool_size=(3, 3), padding='same')(x)
-        avg = AveragePooling2D(pool_size=(3, 3), padding='same')(x)
+        avg = MaxPooling2D(pool_size=(3, 3), padding='same')(x)
 
         avgc = Conv2D(self.filters, kernel_size=1, padding='same')(avg)
 
@@ -36,7 +36,7 @@ class AttentionBlock(Layer):
         avgc = Conv2D(self.filters, kernel_size=1, padding='same')(avgc)
 
         avgc = GlobalAveragePooling2D()(avgc)
-        avgc = Dense(self.filters, use_bias=True)(avgc)
+        avgc = Dense(self.filters)(avgc)
         avgc = Activation('softmax')(avgc)
 
         avgc = Reshape((1, self.filters))(avgc)
@@ -53,8 +53,8 @@ class AttentionBlock(Layer):
 
         maxc = Conv2D(self.filters, kernel_size=7, padding='same')(maxc)
 
-        maxc = GlobalMaxPooling2D()(maxc)
-        maxc = Dense(self.filters, use_bias=True)(maxc)
+        maxc = GlobalAveragePooling2D()(maxc)
+        maxc = Dense(self.filters)(maxc)
         maxc = Activation('softmax')(maxc)
 
         maxc = Reshape((1, self.filters))(maxc)
@@ -84,17 +84,17 @@ def get_model_compiled(shapeinput, num_class, w_decay=0):
     inputs = Input((shapeinput[0],shapeinput[1],shapeinput[2]))
     x = Conv2D(filters=32, kernel_size=(
         3, 3), padding='same', strides=1)(inputs)
-    x = BatchNormalization()(x)
+    #x = BatchNormalization()(x)
     x = Activation('relu')(x)
     x = MaxPooling2D(pool_size=(2, 2), strides=1, padding='same')(x)
     x = Conv2D(filters=32,kernel_size=(
         3, 3), padding='same', strides=1)(x)
     x = AttentionBlock(32)(x)
-    x = BatchNormalization()(x)
+    #x = BatchNormalization()(x)
     x = Activation('relu')(x)
     x = Conv2D(filters=128, kernel_size=(
         3, 3), padding='same', strides=1)(x)
-    x = BatchNormalization()(x)
+    #x = BatchNormalization()(x)
     x = Activation('relu')(x)
     x = Flatten()(x)
     x = Dropout(0.4)(x)
