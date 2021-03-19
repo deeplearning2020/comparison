@@ -186,9 +186,6 @@ def main():
                 verbose=args.verbosetrain,
                 validation_data=valdata,
                 callbacks=[ModelCheckpoint("/tmp/best_model.h5", monitor='val_accuracy', verbose=0, save_best_only=True)])
-        del clf
-        K.clear_session()
-        gc.collect()
         clf.load_weights("/tmp/best_model.h5")
         clf.compile(loss='categorical_crossentropy',
                 optimizer=Adam(learning_rate=0.001), metrics=['accuracy'])
