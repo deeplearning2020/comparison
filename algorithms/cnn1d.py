@@ -49,7 +49,7 @@ def main():
     parser.add_argument('--set_parameters', action='store_false', help='Set some optimal parameters')
     ############## CHANGE PARAMS ############
     parser.add_argument('--batch_size', default=64, type=int, help='Number of training examples in one forward/backward pass.')
-    parser.add_argument('--epochs', default=3100, type=int, help='Number of full training cycle on the training set')
+    parser.add_argument('--epochs', default=100, type=int, help='Number of full training cycle on the training set')
     #########################################
 
     args = parser.parse_args()
