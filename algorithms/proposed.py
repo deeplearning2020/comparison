@@ -81,21 +81,9 @@ def set_params(args):
 
 
 def get_model_compiled(shapeinput, num_class, w_decay=0):
-    clf = Sequential()
-    clf.add(Conv2D(50, kernel_size=(5, 5), input_shape=shapeinput))
-    clf.add(Activation('relu'))
-    clf.add(Conv2D(100, (5, 5)))
-    clf.add(Activation('relu'))
-    clf.add(MaxPooling2D(pool_size=(2, 2)))
-    clf.add(Flatten())
-    clf.add(Dense(100, kernel_regularizer=regularizers.l2(w_decay)))
-    clf.add(Activation('relu'))
-    clf.add(Dense(num_class, activation='softmax'))
-    clf.compile(loss=categorical_crossentropy,
-                optimizer=Adam(), metrics=['accuracy'])
-
+    inputs = Input((shapeinput[0],shapeinput[1],shapeinput[2]))
     x = Conv2D(filters=32, use_bias=True, kernel_size=(
-        3, 3), padding='same', strides=1)(shapeinput)
+        3, 3), padding='same', strides=1)(inputs)
     x = BatchNormalization()(x)
     x = LeakyReLU()(x)
     x = MaxPooling2D(pool_size=(2, 2), strides=1, padding='same')(x)
@@ -117,7 +105,7 @@ def get_model_compiled(shapeinput, num_class, w_decay=0):
     x = LeakyReLU()(x)
 
     output_layer = Dense(units=num_class, activation='softmax')(x)
-    clf = Model(inputs=input_layer, outputs=output_layer)
+    clf = Model(inputs=inputs, outputs=output_layer)
     clf.compile(loss='categorical_crossentropy',
                 optimizer=Adam(), metrics=['acc'])
     return clf
