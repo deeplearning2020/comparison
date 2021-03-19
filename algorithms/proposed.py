@@ -92,12 +92,12 @@ def get_model_compiled(shapeinput, num_class, w_decay=0):
     x = AttentionBlock(32)(x)
     #x = BatchNormalization()(x)
     x = Activation('relu')(x)
-    x = Conv2D(filters=128, kernel_size=(
+    x = Conv2D(filters=256, kernel_size=(
         3, 3), padding='same', strides=1)(x)
     #x = BatchNormalization()(x)
     x = Activation('relu')(x)
     x = Flatten()(x)
-    x = Dropout(0.4)(x)
+    x = Dropout(0.3)(x)
     x = Dense(units=128,kernel_regularizer=regularizers.l2(w_decay))(x)
     x = Activation('relu')(x)
     x = Dense(units=64,kernel_regularizer=regularizers.l2(w_decay))(x)
