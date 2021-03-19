@@ -41,11 +41,11 @@ class AttentionBlock(Layer):
 
         avgc = Reshape((1, self.filters))(avgc)
         avgc = Conv1D(self.filters, kernel_size=3, padding='same')(avgc)
-        avgc = Activation('softmax')(avgc)
+        avgc = Activation('relu')(avgc)
         avgc = Reshape((1, 1, self.filters))(avgc)
         avgc = Conv2D(self.filters, kernel_size=3, padding='same')(avgc)
         avgc = BatchNormalization()(avgc)
-        avgc = LeakyReLU()(avgc)
+        avgc = Activation('relu')(avgc)
 
         maxc = Conv2D(self.filters, kernel_size=3, padding='same')(max)
 
@@ -59,11 +59,11 @@ class AttentionBlock(Layer):
 
         maxc = Reshape((1, self.filters))(maxc)
         maxc = Conv1D(self.filters, kernel_size=3, padding='same')(maxc)
-        maxc = Activation('softmax')(maxc)
+        maxc = Activation('relu')(maxc)
         maxc = Reshape((1, 1, self.filters))(maxc)
         maxc = Conv2D(self.filters, kernel_size=3, padding='same')(maxc)
         maxc = BatchNormalization()(maxc)
-        maxc = LeakyReLU()(maxc)
+        maxc = Activation('relu')(maxc)
 
         mat_mul = Add()([maxc, avgc, x])
         psi = Conv2D(1, kernel_size=1, padding='same')(mat_mul)
@@ -82,27 +82,27 @@ def set_params(args):
 
 def get_model_compiled(shapeinput, num_class, w_decay=0):
     inputs = Input((shapeinput[0],shapeinput[1],shapeinput[2]))
-    x = Conv2D(filters=32, use_bias=True, kernel_size=(
+    x = Conv2D(filters=32, kernel_size=(
         3, 3), padding='same', strides=1)(inputs)
     x = BatchNormalization()(x)
-    x = LeakyReLU()(x)
+    x = Activation('relu')(x)
     x = MaxPooling2D(pool_size=(2, 2), strides=1, padding='same')(x)
-    x = Conv2D(filters=32, use_bias=True, kernel_size=(
+    x = Conv2D(filters=32,kernel_size=(
         3, 3), padding='same', strides=1)(x)
     x = AttentionBlock(32)(x)
     x = BatchNormalization()(x)
-    x = LeakyReLU()(x)
-    x = Conv2D(filters=128, use_bias=True, kernel_size=(
+    x = Activation('relu')(x)
+    x = Conv2D(filters=128, kernel_size=(
         3, 3), padding='same', strides=1)(x)
     x = BatchNormalization()(x)
-    x = LeakyReLU()(x)
+    x = Activation('relu')(x)
     x = Flatten()(x)
     x = Dropout(0.4)(x)
-    x = Dense(units=256, use_bias=True)(x)
+    x = Dense(units=128)(x)
     x = Dropout(0.3)(x)
-    x = LeakyReLU()(x)
-    x = Dense(units=128, use_bias=True)(x)
-    x = LeakyReLU()(x)
+    x = Activation('relu')(x)
+    x = Dense(units=64)(x)
+    x = Activation('relu')(x)
 
     output_layer = Dense(units=num_class, activation='softmax')(x)
     clf = Model(inputs=inputs, outputs=output_layer)
