@@ -44,7 +44,7 @@ class AttentionBlock(Layer):
         avgc = Activation('relu')(avgc)
         avgc = Reshape((1, 1, self.filters))(avgc)
         avgc = Conv2D(self.filters, kernel_size=3, padding='same')(avgc)
-        avgc = BatchNormalization()(avgc)
+        #avgc = BatchNormalization()(avgc)
         avgc = Activation('relu')(avgc)
 
         maxc = Conv2D(self.filters, kernel_size=3, padding='same')(max)
@@ -62,12 +62,12 @@ class AttentionBlock(Layer):
         maxc = Activation('relu')(maxc)
         maxc = Reshape((1, 1, self.filters))(maxc)
         maxc = Conv2D(self.filters, kernel_size=3, padding='same')(maxc)
-        maxc = BatchNormalization()(maxc)
+        #maxc = BatchNormalization()(maxc)
         maxc = Activation('relu')(maxc)
 
         mat_mul = Add()([maxc, avgc, x])
         psi = Conv2D(1, kernel_size=1, padding='same')(mat_mul)
-        psi = BatchNormalization()(psi)
+        #psi = BatchNormalization()(psi)
         psi = Activation('sigmoid')(psi)
 
         x = tf.multiply(x, psi)
@@ -92,7 +92,7 @@ def get_model_compiled(shapeinput, num_class, w_decay=0):
     x = AttentionBlock(32)(x)
     #x = BatchNormalization()(x)
     x = Activation('relu')(x)
-    x = Conv2D(filters=256, kernel_size=(
+    x = Conv2D(filters=128, kernel_size=(
         3, 3), padding='same', strides=1)(x)
     #x = BatchNormalization()(x)
     x = Activation('relu')(x)
