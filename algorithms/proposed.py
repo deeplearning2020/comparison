@@ -92,12 +92,12 @@ def get_model_compiled(shapeinput, num_class, w_decay=0):
     x = AttentionBlock(32)(x)
     x = BatchNormalization()(x)
     x = LeakyReLU()(x)
-    x = Conv2D(filters=32, use_bias=True, kernel_size=(
+    x = Conv2D(filters=128, use_bias=True, kernel_size=(
         3, 3), padding='same', strides=1)(x)
-    x = AttentionBlock(32)(x)
     x = BatchNormalization()(x)
     x = LeakyReLU()(x)
     x = Flatten()(x)
+    x = Dropout(0.4)(x)
     x = Dense(units=256, use_bias=True)(x)
     x = Dropout(0.3)(x)
     x = LeakyReLU()(x)
@@ -107,7 +107,7 @@ def get_model_compiled(shapeinput, num_class, w_decay=0):
     output_layer = Dense(units=num_class, activation='softmax')(x)
     clf = Model(inputs=inputs, outputs=output_layer)
     clf.compile(loss='categorical_crossentropy',
-                optimizer=Adam(), metrics=['acc'])
+                optimizer=Adam(learning_rate=0.0001), metrics=['acc'])
     return clf
 
 
