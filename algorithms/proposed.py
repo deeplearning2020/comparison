@@ -98,16 +98,15 @@ def get_model_compiled(shapeinput, num_class, w_decay=0):
     x = Activation('relu')(x)
     x = Flatten()(x)
     x = Dropout(0.4)(x)
-    x = Dense(units=128)(x)
-    x = Dropout(0.3)(x)
+    x = Dense(units=128,kernel_regularizer=regularizers.l2(w_decay))(x)
     x = Activation('relu')(x)
-    x = Dense(units=64)(x)
+    x = Dense(units=64,kernel_regularizer=regularizers.l2(w_decay))(x)
     x = Activation('relu')(x)
 
     output_layer = Dense(units=num_class, activation='softmax')(x)
     clf = Model(inputs=inputs, outputs=output_layer)
     clf.compile(loss='categorical_crossentropy',
-                optimizer=Adam(learning_rate=0.0001), metrics=['acc'])
+                optimizer=Adam(learning_rate=0.0001), metrics=['accuracy'])
     return clf
 
 
