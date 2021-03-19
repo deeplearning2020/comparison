@@ -15,7 +15,7 @@ import sys
 
 
 def set_params(args):
-    args.batch_size = 100; args.epochs = 300
+    args.batch_size = 64; args.epochs = 100
     return args
 
 def get_model_compiled(n_bands, num_class):
@@ -36,15 +36,15 @@ def main():
     parser.add_argument('--splitmethod', default="sklearn", type=str, help='Method for split datasets')
     parser.add_argument('--random_state', default=None, type=int, 
                     help='The seed of the pseudo random number generator to use when shuffling the data')
-    parser.add_argument('--tr_percent', default=0.15, type=float, help='samples of train set')
+    parser.add_argument('--tr_percent', default=0.1, type=float, help='samples of train set')
     parser.add_argument('--use_val', action='store_true', help='Use validation set')
     parser.add_argument('--val_percent', default=0.1, type=float, help='samples of val set')
     parser.add_argument('--verbosetrain', action='store_true', help='Verbose train')
     #########################################
     parser.add_argument('--set_parameters', action='store_false', help='Set some optimal parameters')
     ############## CHANGE PARAMS ############
-    parser.add_argument('--batch_size', default=100, type=int, help='Number of training examples in one forward/backward pass.')
-    parser.add_argument('--epochs', default=300, type=int, help='Number of full training cycle on the training set')
+    parser.add_argument('--batch_size', default=64, type=int, help='Number of training examples in one forward/backward pass.')
+    parser.add_argument('--epochs', default=100, type=int, help='Number of full training cycle on the training set')
     #########################################
 
     args = parser.parse_args()
