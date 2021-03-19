@@ -96,6 +96,10 @@ def get_model_compiled(shapeinput, num_class, w_decay=0):
         3, 3), padding='same', strides=1)(x)
     #x = BatchNormalization()(x)
     x = Activation('relu')(x)
+    x = Conv2D(filters=256, kernel_size=(
+        3, 3), padding='same', strides=1)(x)
+    #x = BatchNormalization()(x)
+    x = Activation('relu')(x)
     x = Flatten()(x)
     x = Dense(units=128,kernel_regularizer=regularizers.l2(w_decay))(x)
     x = Activation('relu')(x)
@@ -105,7 +109,7 @@ def get_model_compiled(shapeinput, num_class, w_decay=0):
     output_layer = Dense(units=num_class, activation='softmax')(x)
     clf = Model(inputs=inputs, outputs=output_layer)
     clf.compile(loss='categorical_crossentropy',
-                optimizer=Adam(learning_rate=0.0001), metrics=['accuracy'])
+                optimizer=Adam(learning_rate=0.001), metrics=['accuracy'])
     return clf
 
 
@@ -188,7 +192,7 @@ def main():
                 callbacks=[ModelCheckpoint("/tmp/best_model.h5", monitor='val_accuracy', verbose=0, save_best_only=True)])
         clf.load_weights("/tmp/best_model.h5")
         clf.compile(loss='categorical_crossentropy',
-                optimizer=Adam(learning_rate=0.0001), metrics=['accuracy'])
+                optimizer=Adam(learning_rate=0.001), metrics=['accuracy'])
         print("PARAMETERS", clf.count_params())
         stats[pos, :] = mymetrics.reports(
             np.argmax(clf.predict(x_test), axis=1), y_test)[2]
