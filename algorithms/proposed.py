@@ -190,7 +190,7 @@ def main():
         del clf
         K.clear_session()
         gc.collect()
-        clf = load_model("/tmp/best_model.h5",custom_objects={'AttentionBlock': AttentionBlock})
+        clf = load_weights("/tmp/best_model.h5")
         print("PARAMETERS", clf.count_params())
         stats[pos, :] = mymetrics.reports(
             np.argmax(clf.predict(x_test), axis=1), y_test)[2]
