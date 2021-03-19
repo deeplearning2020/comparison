@@ -34,7 +34,7 @@ def main():
     parser.add_argument('--components', default=None, type=int, help='dimensionality reduction')
     parser.add_argument('--preprocess', default="standard", type=str, help='Preprocessing')
     parser.add_argument('--splitmethod', default="sklearn", type=str, help='Method for split datasets')
-    parser.add_argument('--random_state', default=None, type=int, 
+    parser.add_argument('--random_state', default=42, type=int, 
                     help='The seed of the pseudo random number generator to use when shuffling the data')
     parser.add_argument('--tr_percent', default=0.1, type=float, help='samples of train set')
     parser.add_argument('--use_val', action='store_true', help='Use validation set')
