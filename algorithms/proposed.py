@@ -106,7 +106,7 @@ def get_model_compiled(shapeinput, num_class, w_decay=0):
     output_layer = Dense(units=num_class, activation='softmax')(x)
     clf = Model(inputs=inputs, outputs=output_layer)
     clf.compile(loss='categorical_crossentropy',
-                optimizer=Adam(learning_rate=0.0001), metrics=['accuracy'])
+                optimizer=Adam(learning_rate=0.001), metrics=['accuracy'])
     return clf
 
 
