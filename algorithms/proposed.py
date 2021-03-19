@@ -97,7 +97,6 @@ def get_model_compiled(shapeinput, num_class, w_decay=0):
     #x = BatchNormalization()(x)
     x = Activation('relu')(x)
     x = Flatten()(x)
-    x = Dropout(0.3)(x)
     x = Dense(units=128,kernel_regularizer=regularizers.l2(w_decay))(x)
     x = Activation('relu')(x)
     x = Dense(units=64,kernel_regularizer=regularizers.l2(w_decay))(x)
@@ -190,7 +189,9 @@ def main():
         del clf
         K.clear_session()
         gc.collect()
-        clf = load_weights("/tmp/best_model.h5")
+        clf.load_weights("/tmp/best_model.h5")
+        clf.compile(loss='categorical_crossentropy',
+                optimizer=Adam(learning_rate=0.001), metrics=['accuracy'])
         print("PARAMETERS", clf.count_params())
         stats[pos, :] = mymetrics.reports(
             np.argmax(clf.predict(x_test), axis=1), y_test)[2]
