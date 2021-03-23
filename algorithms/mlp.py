@@ -15,7 +15,7 @@ import sys
 
 
 def set_params(args):
-    args.batch_size = 64; args.epochs = 100
+    args.batch_size = 64; args.epochs = 200
     return args
 
 def get_model_compiled(n_bands, num_class):

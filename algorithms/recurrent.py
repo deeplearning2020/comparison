@@ -15,7 +15,7 @@ import sys
 
 
 def set_params(args):
-    args.batch_size = 64; args.epochs = 100
+    args.batch_size = 64; args.epochs = 200
     return args
 
 def get_model_compiled(feat_size, seq_len, num_class, type_func):
