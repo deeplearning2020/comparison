@@ -76,7 +76,7 @@ class AttentionBlock(Layer):
 
 def set_params(args):
     args.batch_size = 64
-    args.epochs = 30
+    args.epochs = 200
     return args
 
 
