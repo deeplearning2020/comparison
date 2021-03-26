@@ -100,7 +100,7 @@ def get_model_compiled(shapeinput, num_class, w_decay=0):
         3, 3), padding='same', strides=1)(x)
     #x = BatchNormalization()(x)
     x = Activation('relu')(x)
-    x = Dropout(0.7)(x)
+    x = Dropout(0.8)(x)
     x = Flatten()(x)
     x = Dropout(0.3)(x)
     x = Dense(units=128,kernel_regularizer=regularizers.l2(w_decay))(x)
