@@ -102,6 +102,7 @@ def get_model_compiled(shapeinput, num_class, w_decay=0):
     x = Activation('relu')(x)
     x = Dropout(0.3)(x)
     x = Flatten()(x)
+    x = Dropout(0.2)(x)
     x = Dense(units=128,kernel_regularizer=regularizers.l2(w_decay))(x)
     x = Activation('relu')(x)
     x = Dense(units=64,kernel_regularizer=regularizers.l2(w_decay))(x)
