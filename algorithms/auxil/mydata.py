@@ -48,11 +48,29 @@ def loadData(name, num_components=None, preprocessing="standard"):
     data = data.reshape(shapeor)
     return data, labels, num_class
 
+def oversampleWeakClasses(X, y):
+    uniqueLabels, labelCounts = np.unique(y, return_counts=True)
+    maxCount = np.max(labelCounts)
+    labelInverseRatios = maxCount / labelCounts  
+    # repeat for every label and concat
+    newX = X[y == uniqueLabels[0], :, :, :].repeat(round(labelInverseRatios[0]), axis=0)
+    newY = y[y == uniqueLabels[0]].repeat(round(labelInverseRatios[0]), axis=0)
+    for label, labelInverseRatio in zip(uniqueLabels[1:], labelInverseRatios[1:]):
+        cX = X[y== label,:,:,:].repeat(round(labelInverseRatio), axis=0)
+        cY = y[y == label].repeat(round(labelInverseRatio), axis=0)
+        newX = np.concatenate((newX, cX))
+        newY = np.concatenate((newY, cY))
+    np.random.seed(seed=42)
+    rand_perm = np.random.permutation(newY.shape[0])
+    newX = newX[rand_perm, :, :, :]
+    newY = newY[rand_perm]
+    return newX, newY
 
 def split_data(pixels, labels, value, splitdset="sklearn", rand_state=None):
     if splitdset == "sklearn":
         X_test, X_train, y_test, y_train = \
             train_test_split(pixels, labels, test_size=value, stratify=labels, random_state=rand_state)
+        X_train, y_train = oversampleWeakClasses(X_train, y_train)
     elif "custom" in splitdset:
         labels = labels.reshape(-1)
         X_train = []; X_test = []; y_train = []; y_test = [];
