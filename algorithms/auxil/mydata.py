@@ -70,7 +70,7 @@ def split_data(pixels, labels, value, splitdset="sklearn", rand_state=None):
     if splitdset == "sklearn":
         X_test, X_train, y_test, y_train = \
             train_test_split(pixels, labels, test_size=value, stratify=labels, random_state=rand_state)
-        X_train, y_train = oversampleWeakClasses(X_train, y_train)
+        #X_train, y_train = oversampleWeakClasses(X_train, y_train)
     elif "custom" in splitdset:
         labels = labels.reshape(-1)
         X_train = []; X_test = []; y_train = []; y_test = [];
