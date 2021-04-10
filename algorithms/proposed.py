@@ -100,8 +100,8 @@ def get_model_compiled(shapeinput, num_class, w_decay=0):
         3, 3), padding='same', strides=1)(x)
     #x = BatchNormalization()(x)
     x = Activation('relu')(x)
-    x = Flatten()(x)
-    #x = GlobalAveragePooling2D()(x)
+    #x = Flatten()(x)
+    x = GlobalAveragePooling2D()(x)
     x = Dense(units=128,kernel_regularizer=regularizers.l2(w_decay))(x)
     x = Activation('relu')(x)
     x = Dense(units=64,kernel_regularizer=regularizers.l2(w_decay))(x)
@@ -123,7 +123,7 @@ def main():
     parser.add_argument('--repeat', default=1, type=int, help='Number of runs')
     parser.add_argument('--components', default=None,
                         type=int, help='dimensionality reduction')
-    parser.add_argument('--spatialsize', default=11,
+    parser.add_argument('--spatialsize', default=9,
                         type=int, help='windows size')
     parser.add_argument('--wdecay', default=0.02, type=float,
                         help='apply penalties on layer parameters')
