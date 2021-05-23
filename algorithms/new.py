@@ -60,7 +60,7 @@ def set_params(args):
 
 
 def get_model_compiled(shapeinput, num_class, w_decay=0):
-    inputs = Input((shapeinput[0],shapeinput[1],shapeinput[2]))
+    inputs = shapeinput
     x = Conv2D(filters=32, kernel_size=(
         3, 3), padding='same', strides=1)(inputs)
     #x = BatchNormalization()(x)
