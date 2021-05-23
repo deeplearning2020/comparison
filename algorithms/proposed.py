@@ -83,7 +83,7 @@ def set_params(args):
 def get_model_compiled(shapeinput, num_class, w_decay=0):
     inputs = Input((shapeinput[0],shapeinput[1],shapeinput[2]))
     filters = [4,4,4,8]
-    x = Conv3D(filters=4,use_bias=False,kernel_size=(3,3,5), padding =       'valid',strides = 1)(input_layer)
+    x = Conv3D(filters=4,use_bias=False,kernel_size=(3,3,5), padding =       'valid',strides = 1)(inputs)
     x = BatchNormalization()(x)
     x = LeakyReLU()(x)
 
