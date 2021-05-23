@@ -16,62 +16,41 @@ from keras.utils import to_categorical as keras_to_categorical
 import numpy as np
 import sys
 
-
 class AttentionBlock(Layer):
     def __init__(self, filters):
 
         super(AttentionBlock, self).__init__()
         self.filters = filters
         #self.init = RandomNormal()
-
     def call(self, x):
+        conv_3d = Conv3D(filters = self.filters, kernel_size=3, strides = 1, padding = 'same')(x)
+        conv_3d_shape = conv_3d._keras_shape
+        print(conv_3d_shape)
+        conv_3d = Reshape((conv_3d_shape[1], conv_3d_shape[2], conv_3d_shape[3]*conv_3d_shape[4]))(conv_3d)
 
-        max = MaxPooling2D(pool_size=(3, 3), padding='same')(x)
-        avg = MaxPooling2D(pool_size=(3, 3), padding='same')(x)
+        conv_2d = Conv2D(filters = self.filters, kernel_size=3, strides = 1, padding = 'same')(conv_3d)
+        conv_2d_shape = conv_2d._keras_shape
+        print(conv_2d_shape)
 
-        avgc = Conv2D(self.filters, kernel_size=1, padding='same')(avg)
+        conv_2d = Reshape((conv_2d_shape[1],conv_2d_shape[2]*conv_2d_shape[3]))(conv_2d)
 
-        avgc = Conv2D(self.filters, kernel_size=1, padding='same')(avgc)
+        conv_1d = Conv1D(filters = self.filters, kernel_size=3, strides = 1, padding = 'same')(conv_2d)
+        conv_1d_shape = conv_1d._keras_shape
+        print(conv_1d_shape)
 
-        avgc = Conv2D(self.filters, kernel_size=1, padding='same')(avgc)
+        gap = GlobalAveragePooling1D()(conv_1d)
+        fc = Dense(self.filters, use_bias = True)(gap)
+        softmax = Activation('softmax')(fc)
 
-        avgc = GlobalAveragePooling2D()(avgc)
-        avgc = Dense(self.filters)(avgc)
-        avgc = Activation('softmax')(avgc)
-
-        avgc = Reshape((1, self.filters))(avgc)
-        avgc = Conv1D(self.filters, kernel_size=3, padding='same')(avgc)
-        avgc = Activation('relu')(avgc)
-        avgc = Reshape((1, 1, self.filters))(avgc)
-        avgc = Conv2D(self.filters, kernel_size=3, padding='same')(avgc)
-        #avgc = BatchNormalization()(avgc)
-        avgc = Activation('relu')(avgc)
-
-        maxc = Conv2D(self.filters, kernel_size=3, padding='same')(max)
-
-        maxc = Conv2D(self.filters, kernel_size=5, padding='same')(maxc)
-
-        maxc = Conv2D(self.filters, kernel_size=7, padding='same')(maxc)
-
-        maxc = GlobalAveragePooling2D()(maxc)
-        maxc = Dense(self.filters)(maxc)
-        maxc = Activation('softmax')(maxc)
-
-        maxc = Reshape((1, self.filters))(maxc)
-        maxc = Conv1D(self.filters, kernel_size=3, padding='same')(maxc)
-        maxc = Activation('relu')(maxc)
-        maxc = Reshape((1, 1, self.filters))(maxc)
-        maxc = Conv2D(self.filters, kernel_size=3, padding='same')(maxc)
-        #maxc = BatchNormalization()(maxc)
-        maxc = Activation('relu')(maxc)
-
-        mat_mul = Add()([maxc, avgc, x])
-        psi = Conv2D(1, kernel_size=1, padding='same')(mat_mul)
-        #psi = BatchNormalization()(psi)
-        psi = Activation('sigmoid')(psi)
-
-        x = tf.multiply(x, psi)
+        reshape_1d = Reshape((1, self.filters))(softmax)
+        deconv_1d = Conv1D(filters = self.filters, kernel_size = 3, strides = 1, padding = 'same')(reshape_1d)
+        reshape_2d = Reshape((1,1, self.filters))(deconv_1d)
+        deconv_2d = Conv2DTranspose(filters = self.filters, kernel_size=3, strides = 1, padding = 'same')(reshape_2d)
+        reshape_3d = Reshape((1,1,1, self.filters))(deconv_2d)
+        deconv_3d = Conv3DTranspose(filters = self.filters, kernel_size = 3, strides = 1, padding = 'same')(reshape_3d)
+        x = tf.multiply(deconv_3d, x)
         return x
+
 
 
 def set_params(args):
@@ -82,29 +61,30 @@ def set_params(args):
 
 def get_model_compiled(shapeinput, num_class, w_decay=0):
     inputs = Input((shapeinput[0],shapeinput[1],shapeinput[2]))
-    filters = [4,4,4,8]
-    x = Conv3D(filters=4,use_bias=False,kernel_size=(3,3,5), padding =       'valid',strides = 1)(input_layer)
-    x = BatchNormalization()(x)
-    x = LeakyReLU()(x)
-
-    for i in range(4):
-      x = Conv3D(filters=filters[i],use_bias=False,  kernel_size=(3,3,5),padding = 'valid',strides = 1)(x)
-      a1 = AttentionBlock(filters[i])(x)
-      #a1 = LeakyReLU()(a1)
-      b1 = AttentionBlock(filters[i])(x)
-      #b1 = LeakyReLU()(b1)
-      x = Add()([a1,b1])
-      x = Dropout(0.4)(x)
-      x = BatchNormalization()(x)
-      x = LeakyReLU()(x)
-
-    x = Dropout(0.85)(x)
+    x = Conv2D(filters=32, kernel_size=(
+        3, 3), padding='same', strides=1)(inputs)
+    #x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2), strides=1, padding='same')(x)
+    x = Conv2D(filters=32,kernel_size=(
+        3, 3), padding='same', strides=1)(x)
+    x = AttentionBlock(32)(x)
+    #x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = Conv2D(filters=128, kernel_size=(
+        3, 3), padding='same', strides=1)(x)
+    #x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = Conv2D(filters=256, kernel_size=(
+        3, 3), padding='same', strides=1)(x)
+    #x = BatchNormalization()(x)
+    x = Activation('relu')(x)
     x = Flatten()(x)
-    x = Dropout(0.85)(x)
-    x = Dense(units=128, use_bias=True)(x)
-    x = LeakyReLU()(x)
-    x = Dense(units=64, use_bias=True)(x)
-    x = LeakyReLU()(x)
+    #x = GlobalAveragePooling2D()(x)
+    x = Dense(units=128,kernel_regularizer=regularizers.l2(w_decay))(x)
+    x = Activation('relu')(x)
+    x = Dense(units=64,kernel_regularizer=regularizers.l2(w_decay))(x)
+    x = Activation('relu')(x)
 
     output_layer = Dense(units=num_class, activation='softmax')(x)
     clf = Model(inputs=inputs, outputs=output_layer)
