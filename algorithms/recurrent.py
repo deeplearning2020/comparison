@@ -1,4 +1,6 @@
 import argparse
+import tensorflow as tf
+tf.compat.v1.disable_v2_behavior()
 import auxil.mydata as mydata
 import auxil.mymetrics as mymetrics
 import gc
