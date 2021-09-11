@@ -1,28 +1,26 @@
 import argparse
-import tensorflow as tf
-tf.compat.v1.disable_v2_behavior()
 import auxil.mydata as mydata
 import auxil.mymetrics as mymetrics
 import gc
-import tensorflow.keras.backend as K
-from tensorflow.keras.callbacks import ModelCheckpoint
-from tensorflow.keras.models import load_model
-from tensorflow.keras.losses import categorical_crossentropy
-from tensorflow.keras.layers import Dense, CuDNNGRU, CuDNNLSTM, Flatten, SimpleRNN
-from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.utils import to_categorical as keras_to_categorical
+import keras.backend as K
+from keras.callbacks import ModelCheckpoint
+from keras.models import load_model
+from keras.losses import categorical_crossentropy
+from keras.layers import Dense, CuDNNGRU, CuDNNLSTM, Flatten, SimpleRNN
+from keras.models import Sequential, Model
+from keras.optimizers import Adam
+from keras.utils import to_categorical as keras_to_categorical
 import numpy as np
 import sys
 
 
 def set_params(args):
-    args.batch_size = 64; args.epochs = 200
+    args.batch_size = 64; args.epochs = 100
     return args
 
 def get_model_compiled(feat_size, seq_len, num_class, type_func):
     if type_func == "RNN": func = SimpleRNN
-    elif type_func == "GRU": func = CuDNNGRU
+    elif type_func == "GRU": func = GRU
     elif type_func == "LSTM": func = CuDNNLSTM
     else: print("NOT RECURRENT FUNC")
     clf = Sequential()
