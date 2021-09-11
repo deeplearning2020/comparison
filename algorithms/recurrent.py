@@ -5,13 +5,13 @@ import auxil.mydata as mydata
 import auxil.mymetrics as mymetrics
 import gc
 import tensorflow.keras.backend as K
-from keras.callbacks import ModelCheckpoint
-from keras.models import load_model
-from keras.losses import categorical_crossentropy
-from keras.layers import Dense, CuDNNGRU, CuDNNLSTM, Flatten, SimpleRNN
-from keras.models import Sequential, Model
-from keras.optimizers import Adam
-from keras.utils import to_categorical as keras_to_categorical
+from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow.keras.models import load_model
+from tensorflow.keras.losses import categorical_crossentropy
+from tensorflow.keras.layers import Dense, CuDNNGRU, CuDNNLSTM, Flatten, SimpleRNN
+from tensorflow.keras.models import Sequential, Model
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.utils import to_categorical as keras_to_categorical
 import numpy as np
 import sys
 
