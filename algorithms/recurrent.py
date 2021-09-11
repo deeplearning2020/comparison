@@ -4,7 +4,7 @@ tf.compat.v1.disable_v2_behavior()
 import auxil.mydata as mydata
 import auxil.mymetrics as mymetrics
 import gc
-import keras.backend as K
+import tensorflow.keras.backend as K
 from keras.callbacks import ModelCheckpoint
 from keras.models import load_model
 from keras.losses import categorical_crossentropy
