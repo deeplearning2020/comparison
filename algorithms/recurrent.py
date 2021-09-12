@@ -20,7 +20,7 @@ def set_params(args):
 
 def get_model_compiled(feat_size, seq_len, num_class, type_func):
     if type_func == "RNN": func = SimpleRNN
-    elif type_func == "GRU": func = GRU
+    elif type_func == "GRU": func = CuDNNGRU
     elif type_func == "LSTM": func = CuDNNLSTM
     else: print("NOT RECURRENT FUNC")
     clf = Sequential()
