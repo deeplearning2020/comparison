@@ -61,7 +61,7 @@ def main():
             rstate = args.random_state+pos if args.random_state != None else None
             x_train, x_test, y_train, y_test = \
                 mydata.split_data(pixels, labels, args.tr_percent, rand_state=rstate)
-        clf = RandomForestClassifier(\
+        clf = DecisionTreeClassifier(\
                     min_samples_split=args.m_s_split, \
                     max_features=args.max_feat, max_depth=args.depth) \
                     .fit(x_train, y_train)
