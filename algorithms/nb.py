@@ -61,7 +61,7 @@ def main():
             rstate = args.random_state+pos if args.random_state != None else None
             x_train, x_test, y_train, y_test = \
                 mydata.split_data(pixels, labels, args.tr_percent, rand_state=rstate)
-        clf = GaussianNB()().fit(x_train, y_train)
+        clf = GaussianNB().fit(x_train, y_train)
         stats[pos,:] = mymetrics.reports(clf.predict(x_test), y_test)[2]
     print(stats[-1])
 
